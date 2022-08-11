@@ -24,13 +24,13 @@ https://amgiapp.herokuapp.com/
   * keep track and create personalized deck based on each flashcard's difficulty level to recall (again, hard, good, easy)
 
 ### Demo
-Create deck and flashcard
+Create deck and flashcard</br>
 ![create-deck-card](https://user-images.githubusercontent.com/82434097/184241318-5439005a-7e58-4479-a464-52764eaef0bf.gif)
 
-Practice flashcards and mark their recallability
+Practice flashcards and mark their recallability</br>
 ![practice](https://user-images.githubusercontent.com/82434097/184241422-3429b501-f320-492f-827a-f3f564c556cb.gif)
 
-Delete flashcard and deck
+Delete flashcard and deck</br>
 ![delete](https://user-images.githubusercontent.com/82434097/184241462-50794c58-8239-4cab-a792-cff9030141d0.gif)
 
 ### Test
