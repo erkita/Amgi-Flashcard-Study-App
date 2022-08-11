@@ -1,0 +1,560 @@
+swagger: "2.0"
+info:
+  description: "Amgi (flashcard study app) APIs for deck, flashcard, and user."
+  version: "1.0.0"
+  title: "Amgi API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    name: "Amgi Team Github"
+    url: "https://github.com/neu-seattle-cs5500-summer2022/project-SM22-erkita-vmalecode-stefanisindarto-cathylee12"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "amgiapi.herokuapp.com"
+basePath: "/"
+tags:
+  - name: "decks"
+    description: "Manage flashcard decks here"
+  - name: "flashcard"
+    description: "Access to flashcards"
+  - name: "user"
+    description: "Operations about user"
+    externalDocs:
+      description: "Find out more about flashcard app"
+      url: "http://swagger.io"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /api/decks:
+    post:
+      tags:
+        - "decks"
+      summary: "Add a new deck"
+      description: "Add a new deck to user account"
+      operationId: "createDeck"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "deck name"
+          description: "Required deck name"
+          required: true
+          schema:
+            $ref: "#/definitions/Decks"
+      responses:
+        "201":
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Decks"
+        "409":
+          description: "Name cannot be empty"
+        "404":
+          description: "Valid name required"
+    get:
+      tags:
+        - "decks"
+      summary: "Get all decks"
+      description: "Get all decks that user owns"
+      operationId: "getDecks"
+      consumes: []
+      produces:
+        - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "Successfully retrieved decks"
+          schema:
+            $ref: "#/definitions/Decks"
+        "404":
+          description: "Decks does not exist"
+  /api/decks/{deckId}:
+    get:
+      tags:
+        - "decks"
+      summary: "Get one, sepecific deck"
+      description: "Get deck with specified deckId"
+      operationId: "getDeck"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "deckId"
+          in: "path"
+          description: "ID of deck to retrieve"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Successfully retrieved deck"
+          schema:
+            $ref: "#/definitions/Decks"
+        "404":
+          description: "Deck with ID "
+    patch:
+      tags:
+        - "decks"
+      summary: "Patch specified deck name"
+      description: "Change deck name to specified name"
+      operationId: "updateDeckName"
+      parameters:
+        - name: "deckId"
+          in: "path"
+          description: "ID of deck to retrieve"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "name"
+          required: true
+          schema:
+            $ref: "#/definitions/Flashcard"
+      responses:
+        "200":
+          description: "Successfully changed deck name"
+          schema:
+            $ref: "#/definitions/Decks"
+        "404":
+          description: "Valid name required"
+    delete:
+      tags:
+        - "decks"
+      summary: "Delete specified deck"
+      description: "Delete specified deck"
+      operationId: "deleteDecks"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "deckId"
+          in: "path"
+          description: "ID of deck to be deleted"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Deck deleted"
+        "404":
+          description: "Could not delete deck with invalid ID"
+  /api/decks/{deckId}/public:
+    patch:
+      tags:
+        - "decks"
+      summary: "Patch deck status to public"
+      description: "Update public status of a deck"
+      operationId: "updatePublicDeck"
+      parameters:
+        - name: "deckId"
+          in: "path"
+          description: "ID of deck to retrieve"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "public"
+          required: true
+          schema:
+            $ref: "#/definitions/Decks"
+      responses:
+        "200":
+          description: "Successfully changed deck status"
+          schema:
+            $ref: "#/definitions/Decks"
+        "404":
+          description: "Valid name required"
+  /api/decks/{deckId}/cards:
+    post:
+      tags:
+        - "flashcard"
+      summary: "Add a new flashcard"
+      description: "Add a new flashcard to specified deck"
+      operationId: "createCard"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "flashcard"
+          required: true
+          schema:
+            $ref: "#/definitions/Flashcard"
+      responses:
+        "201":
+          description: "Card created"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "409":
+          description: "Front or back field cannot be empty"
+
+    get:
+      tags:
+        - "flashcard"
+      summary: "Get all cards"
+      description: "Get all cards from specified deck"
+      operationId: "getCards"
+      consumes: []
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Successfully retrieved cards"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "Cards do not exist"
+  /api/decks/{deckId}/cards/{cardId}:
+    get:
+      tags:
+        - "flashcard"
+      summary: "Get a card"
+      description: "Get a specified card from the specified deck"
+      operationId: "getCard"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cardId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Successfully retrieved the card"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "The card does not exist"
+    delete:
+      tags:
+        - "flashcard"
+      summary: "Delete a card"
+      description: "Delete a specified card from the specified deck"
+      operationId: "deleteCard"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cardId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Successfully deleted the card"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "The card does not exist"
+      security: []
+
+  /api/decks/{deckId}/cards/{cardId}/front:
+    get:
+      tags:
+        - "flashcard"
+      summary: "Get front of a card"
+      description: "Get the front of a specified card"
+      operationId: "getFront"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cardId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Successfully retrieved the front of the card"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "The card does not exist"
+
+    patch:
+      tags:
+        - "flashcard"
+      summary: "Update front of a card"
+      description: "Update the front of a specified card"
+      operationId: "updateFront"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cardId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "front"
+          required: true
+          schema:
+            type: object
+            required:
+              - front
+            properties:
+              front:
+                type: string
+      responses:
+        "200":
+          description: "Successfully updated the front"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "Failed to update"
+
+  /api/decks/{deckId}/cards/{cardId}/back:
+    get:
+      tags:
+        - "flashcard"
+      summary: "Get back of a card"
+      description: "Get the back of a specified card"
+      operationId: "getBack"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cardId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Successfully retrieved the back of the card"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "The card does not exist"
+
+    patch:
+      tags:
+        - "flashcard"
+      summary: "Update back of a card"
+      description: "Update the back of a specified card"
+      operationId: "updateBack"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cardId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "new back field"
+          required: true
+          schema:
+            type: object
+            required:
+              - back
+            properties:
+              back:
+                type: string
+      responses:
+        "200":
+          description: "Successfully updated the back"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "Failed to update"
+
+  /api/decks/{deckId}/cards/{cardId}/recallability:
+    patch:
+      tags:
+        - "flashcard"
+      summary: "Update recallability of a card"
+      description: "Update the recallability of a specified card"
+      operationId: "updateRecallability"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "deckId"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "cardId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "new recallability field"
+          required: true
+          schema:
+            type: object
+            required:
+              - recallability
+            properties:
+              recallability:
+                type: string
+                format: enum
+      responses:
+        "200":
+          description: "Successfully updated the recallability"
+          schema:
+            $ref: "#/definitions/Flashcard"
+        "404":
+          description: "Failed to update"
+
+  /api/login:
+    post:
+      tags:
+        - “login"
+      summary: “Authenticating user"
+      description: "User login"
+      operationId: “login"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "user"
+          in: "body"
+          description: "Required email"
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        "200":
+          description: "User logged in"
+          schema:
+            $ref: "#/definitions/User"
+        "500":
+          description: "Something went wrong."
+
+  /api/signup:
+    post:
+      tags:
+        - “signup"
+      summary: “Add a user"
+      description: "User signup"
+      operationId: “signup"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "user"
+          in: "body"
+          description: "Required email"
+          schema:
+            type: "object"
+            required:
+              - "email"
+              - "password"
+              - "confirmPassword"
+              - "firstName"
+              - "lastName"
+            properties:
+              firstName:
+                type: "string"
+              lastName:
+                type: "string"
+              email:
+                type: "string"
+              password:
+                type: "string"
+              confirmPassword:
+                type: "string"
+      responses:
+        "200":
+          description: "User created."
+          schema:
+            $ref: "#/definitions/User"
+        "500":
+          description: "Something went wrong."
+
+definitions:
+  Decks:
+    type: "object"
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      recallabilityPercentage:
+        type: "number"
+      lastReviewed:
+        type: "string"
+        format: "date-time"
+      dateCreated:
+        type: "string"
+        format: "date-time"
+    xml:
+      name: "Deck"
+  Flashcard:
+    type: "object"
+    properties:
+      front:
+        type: "string"
+      back:
+        type: "string"
+      recallability:
+        type: "string"
+        format: "enum"
+    xml:
+      name: "Flashcard"
+  User:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      id:
+        type: "string"
+    xml:
+      name: "User"
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
